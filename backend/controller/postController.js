@@ -1,5 +1,10 @@
 const Post = require("../models/postModel");
 const asyncHandler = require("express-async-handler");
+
+
+
+
+
 const createPost = asyncHandler(async (req, res) => {
   const { text, image } = req.body;
   if (!text && !image) {
@@ -24,7 +29,7 @@ const updatePost = asyncHandler(async (req, res) => {
     throw new Error("Post Not Found!!");
   }
 
-  if (req.user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -47,7 +52,7 @@ const deletePost = asyncHandler(async (req, res) => {
     throw new Error("Post Not Found!!");
   }
 
-  if (req.user) {
+  if (!req.user) {
     res.status(401);
     throw new Error("User not found");
   }
@@ -63,7 +68,6 @@ const deletePost = asyncHandler(async (req, res) => {
 
 module.exports = {
   createPost,
-  getAllPost,
   updatePost,
   deletePost,
 };

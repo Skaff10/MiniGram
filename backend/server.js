@@ -11,6 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/users", require("./routes/userRoutes"));
+app.use("/post", require("./routes/postRoutes"));
+app.use("/feed", require("./routes/feedRoutes"));
 
 app.use(errorHandler);
 

@@ -33,6 +33,7 @@ const getFeedPosts = asyncHandler(async (req, res) => {
     post.commments = commment.reverse();
     postLikeCount = post.likes.length;
   }
+  res.status(200).json(posts);
 });
 
 module.exports = {
