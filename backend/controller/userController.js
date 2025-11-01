@@ -18,7 +18,7 @@ const uploadDP = asyncHandler(async (req, res) => {
     throw new Error("No file uploaded");
   }
 
-  user.profilePic = req.file.path;
+  user.profilePic = imageUrl;
   await user.save();
 
   res.status(200).json({
@@ -27,6 +27,7 @@ const uploadDP = asyncHandler(async (req, res) => {
     publicId,
   });
 });
+
 
 //Register User
 const registerUser = asyncHandler(async (req, res) => {

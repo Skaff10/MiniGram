@@ -4,14 +4,15 @@ const asyncHandler = require("express-async-handler");
 
 const createComment = asyncHandler(async (req, res) => {
   const { text } = req.body;
+  const { postId } = req.params;
   if (!text) {
     res.status(404);
     throw new Error("No Comments!!");
   }
 
-  const comment = Comment.create({
-    user: req.user_id,
-    post: req.post._id,
+  const comment = await Comment.create({
+    user: req.user._id,
+    post: postId,
     text: text,
   });
 
@@ -32,17 +33,19 @@ const updateComment = asyncHandler(async (req, res) => {
   }
 
   if (comment.user.toString() !== req.user.id) {
-    res.status(401);
-    throw new Error("User not authorized");
+    res.status(403);
+    throw new Error("User not authorized to edit this comment!");
   }
 
-  const updatedComment = await Comment.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-    }
-  );
+  //   const updatedComment = await Comment.findByIdAndUpdate(
+  //     req.params.id,
+  //     req.body,
+  //     {
+  //       new: true,
+  //     }
+  //   );
+  comment.text = req.body.text || comment.text;
+  const updatedComment = await comment.save();
   res.status(200).json(updatedComment);
 });
 

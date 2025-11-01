@@ -4,17 +4,22 @@ const asyncHandler = require("express-async-handler");
 
 // get all post for a single post to show in my profile section
 const getProfilePost = asyncHandler(async (req, res) => {
+  // Make posts plain JS objects so we can add custom fields
   const posts = await Post.find({ user: req.user._id })
     .sort({ createdAt: -1 })
-    .populate("user", "user_name profilePic");
+    .populate("user", "user_name profilePic")
+    .lean();
 
   for (let post of posts) {
-    const commment = await Comment.find({ post: post._id })
+    // Fetch comments for each post
+    const comment = await Comment.find({ post: post._id })
       .sort({ createdAt: -1 })
       .populate("user", "user_name profilePic")
       .lean();
-    post.commments = commment.reverse();
-    postLikeCount = post.likes.length;
+
+    // Attach comments and like count
+    post.comments = comment.reverse(); // oldest first
+    post.likeCount = post.likes.length;
   }
 
   res.status(200).json(posts);
