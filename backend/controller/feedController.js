@@ -29,13 +29,14 @@ const getProfilePost = asyncHandler(async (req, res) => {
 const getFeedPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()
     .sort({ createdAt: -1 })
-    .populate("user", "user_name profilePic");
+    .populate("user", "user_name profilePic")
+    .lean();
   for (let post of posts) {
-    const commment = await Comment.find({ post: post._id })
+    const comment = await Comment.find({ post: post._id })
       .sort({ createdAt: -1 })
       .populate("user", "user_name profilePic")
       .lean();
-    post.commments = commment.reverse();
+    post.comments = comment.reverse();
     postLikeCount = post.likes.length;
   }
   res.status(200).json(posts);

@@ -1,5 +1,5 @@
 const Comment = require("../models/commentModel");
-
+const Post = require("../models/postModel");
 const asyncHandler = require("express-async-handler");
 
 const createComment = asyncHandler(async (req, res) => {
@@ -26,7 +26,6 @@ const updateComment = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Comment Not Found!!");
   }
-
   if (!req.user) {
     res.status(401);
     throw new Error("User not found");
@@ -36,14 +35,6 @@ const updateComment = asyncHandler(async (req, res) => {
     res.status(403);
     throw new Error("User not authorized to edit this comment!");
   }
-
-  //   const updatedComment = await Comment.findByIdAndUpdate(
-  //     req.params.id,
-  //     req.body,
-  //     {
-  //       new: true,
-  //     }
-  //   );
   comment.text = req.body.text || comment.text;
   const updatedComment = await comment.save();
   res.status(200).json(updatedComment);
@@ -51,6 +42,8 @@ const updateComment = asyncHandler(async (req, res) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
   const comment = await Comment.findById(req.params.id);
+  const post = await Post.findById(comment.post);
+
   if (!comment) {
     res.status(404);
     throw new Error("Comment Not Found!!");
@@ -61,7 +54,10 @@ const deleteComment = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (comment.user.toString() !== req.user.id) {
+  if (
+    comment.user.toString() !== req.user.id &&
+    post.user._id.toString() !== req.user.id
+  ) {
     res.status(401);
     throw new Error("User not authorized");
   }

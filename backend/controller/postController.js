@@ -117,6 +117,8 @@ const likeDislikePost = asyncHandler(async (req, res) => {
     likedByUser: !alreadyLiked,
   });
 });
+
+
 module.exports = {
   createPost,
   updatePost,
