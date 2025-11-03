@@ -20,6 +20,8 @@ const userSchema = mongoose.Schema(
     profilePic: {
       type: String,
     },
+    otp: String,
+    otpExpires: Date,
   },
   {
     timestamps: true,

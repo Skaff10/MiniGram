@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const generateOtp = require("../utils/generateOtp");
 // Upload User Profile Picture
 const uploadDP = asyncHandler(async (req, res) => {
   const imageUrl = req.file.path;
@@ -102,10 +103,18 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    const otp = generateOtp();
+    user.otp = otp;
+    user.otpExpires = Date.now() + 2 * 60 * 1000;
+    await user.save();
+
+    await sendOtpEmail(user.email, otp);
+
     res.status(200).json({
-      username: user.user_name,
-      email: user.email,
-      token: generateToken(user._id),
+      // username: user.user_name,
+      // email: user.email,
+      // token: generateToken(user._id),
+      message: "OTP sent to your email",
     });
 
     return;
@@ -113,6 +122,41 @@ const loginUser = asyncHandler(async (req, res) => {
 
   res.status(400);
   throw new Error("Invalid Credentials");
+});
+
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User Not Found!");
+  }
+
+  if (user.otp !== otp) {
+    res.status(400);
+    throw new Error("Invalid OTP");
+  }
+
+  if (Date.now() > user.otpExpires) {
+    res.status(400);
+    throw new Error("OTP Expired");
+  }
+
+  /// Clear OTP fields
+  user.otp = undefined;
+  user.otpExpires = undefined;
+  await user.save();
+
+  res.status(200).json({
+    message: "Login Successfull",
+    token: generateToken(user._id),
+    user: {
+      id: user._id,
+      username: user.user_name,
+      email: user.email,
+    },
+  });
 });
 
 const generateToken = (id) => {
@@ -126,4 +170,5 @@ module.exports = {
   loginUser,
   uploadDP,
   getUser,
+  verifyOtp,
 };

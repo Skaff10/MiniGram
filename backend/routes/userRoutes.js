@@ -7,11 +7,13 @@ const {
   loginUser,
   uploadDP,
   getUser,
+  verifyOtp,
 } = require("../controller/userController");
 
 router.get("/getuser/:id", getUser);
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
+router.post("/verifyotp", verifyOtp);
 router.post("/upload", protect, upload.single("image"), uploadDP);
 
 module.exports = router;
