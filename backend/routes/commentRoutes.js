@@ -8,7 +8,7 @@ const {
   deleteComment,
 } = require("../controller/commentController");
 
-router.post("/createcomment/:postId", protect, createComment);
+router.post("/createcomment/:id", protect, createComment); // id -> post ID
 router.put("/updatecomment/:id", protect, updateComment);
 router.delete("/deletecomment/:id", protect, deleteComment);
 

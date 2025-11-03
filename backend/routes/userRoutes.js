@@ -6,8 +6,10 @@ const {
   registerUser,
   loginUser,
   uploadDP,
+  getUser,
 } = require("../controller/userController");
 
+router.get("/getuser/:id", getUser);
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/upload", protect, upload.single("image"), uploadDP);

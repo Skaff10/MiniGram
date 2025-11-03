@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 
 const createComment = asyncHandler(async (req, res) => {
   const { text } = req.body;
-  const { postId } = req.params;
+  const { id } = req.params;
   if (!text) {
     res.status(404);
     throw new Error("No Comments!!");
@@ -12,7 +12,7 @@ const createComment = asyncHandler(async (req, res) => {
 
   const comment = await Comment.create({
     user: req.user._id,
-    post: postId,
+    post: id,
     text: text,
   });
 

@@ -2,6 +2,16 @@ const cloudinary = require("../config/cloudinary");
 const Post = require("../models/postModel");
 const asyncHandler = require("express-async-handler");
 
+const getpost = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    res.status(404);
+    throw new Error("Post Not Found!!");
+  }
+  await post.populate("user", "user_name profilePic");
+  res.status(201).json(post);
+});
+
 const createPost = asyncHandler(async (req, res) => {
   const { text } = req.body;
   if (!text && !req.file) {
@@ -34,7 +44,7 @@ const updatePost = asyncHandler(async (req, res) => {
     throw new Error("Post Not Found!!");
   }
 
-  if (!req.user || post.user.toString !== req.user.id) {
+  if (!req.user || post.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not Authorized");
   }
@@ -118,10 +128,10 @@ const likeDislikePost = asyncHandler(async (req, res) => {
   });
 });
 
-
 module.exports = {
   createPost,
   updatePost,
   deletePost,
   likeDislikePost,
+  getpost,
 };

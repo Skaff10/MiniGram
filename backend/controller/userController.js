@@ -28,12 +28,20 @@ const uploadDP = asyncHandler(async (req, res) => {
   });
 });
 
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  res.status(200).json(user);
+});
 
 //Register User
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, user_name, email, password } = req.body;
+  const { name, user_name, email, password, confirmpassword } = req.body;
 
-  if (!name || !user_name || !email || !password) {
+  if (!name || !user_name || !email || !password || !confirmpassword) {
     res.status(400);
     throw new Error("Please Provide credentials");
   }
@@ -45,6 +53,11 @@ const registerUser = asyncHandler(async (req, res) => {
   if (emailExist || userNameExist) {
     res.status(400);
     throw new Error("User Already Exists!!");
+  }
+
+  if (password !== confirmpassword) {
+    res.status(400);
+    throw new Error("Password Doesn't Match!!");
   }
 
   // Hash password
@@ -112,4 +125,5 @@ module.exports = {
   registerUser,
   loginUser,
   uploadDP,
+  getUser,
 };
