@@ -2,8 +2,6 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const generateOtp = require("../utils/generateOtp");
-const sendOTP = require("../utils/sendOTP");
 // Upload User Profile Picture
 const uploadDP = asyncHandler(async (req, res) => {
   const imageUrl = req.file.path;
@@ -66,30 +64,31 @@ const registerUser = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(password, salt);
 
-  //Generate Otp
-  const otp = generateOtp();
-
   //Create User Documents npm
   const user = await User.create({
     name,
     user_name,
     email,
     password: hashedPass,
-    otp,
-    otpExpires: Date.now() + 5 * 60 * 1000,
-    isVerified: false,
   });
 
-  await sendOTP(user.email, otp);
-
-  res.status(201).json({
-    message:
-      "User registered successfully. Please verify OTP sent to your email.",
-    email: user.email,
-  });
+  //If user created successfull
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      name: user.name,
+      username: user.user_name,
+      email: user.email,
+      password: user.password,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid User");
+  }
 });
 
 //Login User
+
 const loginUser = asyncHandler(async (req, res) => {
   const { identifier, password } = req.body;
 
@@ -103,11 +102,6 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    if (!user.isVerified) {
-      res.status(403);
-      throw new Error("Please verify your email before logging in.");
-    }
-
     res.status(200).json({
       username: user.user_name,
       email: user.email,
@@ -121,47 +115,6 @@ const loginUser = asyncHandler(async (req, res) => {
   throw new Error("Invalid Credentials");
 });
 
-const verifyOtp = asyncHandler(async (req, res) => {
-  const { email, otp } = req.body;
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    res.status(404);
-    throw new Error("User Not Found!");
-  }
-
-  if (user.isVerified) {
-    res.status(400);
-    throw new Error("User Already Verified!");
-  }
-
-  if (user.otp !== otp) {
-    res.status(400);
-    throw new Error("Invalid OTP");
-  }
-
-  if (Date.now() > user.otpExpires) {
-    res.status(400);
-    throw new Error("OTP Expired");
-  }
-
-  /// Clear OTP fields
-  user.isVerified = true;
-  user.otp = undefined;
-  user.otpExpires = undefined;
-  await user.save();
-
-  res.status(200).json({
-    message: "Account verified Successfully!",
-    token: generateToken(user._id),
-    user: {
-      id: user._id,
-      username: user.user_name,
-      email: user.email,
-    },
-  });
-});
-
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "10d",
@@ -173,5 +126,4 @@ module.exports = {
   loginUser,
   uploadDP,
   getUser,
-  verifyOtp,
 };
