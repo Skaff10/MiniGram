@@ -38,7 +38,7 @@ const likePost = async (id, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const res = await axios.put(API_URL + "like" + "/id", config);
+  const res = await axios.put(API_URL + "like/" + id, config);
 
   return res.data;
 };
@@ -50,7 +50,7 @@ const getPost = async (id, token) => {
     },
   };
 
-  const res = await axios.get(API_URL + "getpost" + "/id", config);
+  const res = await axios.get(API_URL + "getpost/" + id, config);
   return res.data;
 };
 
