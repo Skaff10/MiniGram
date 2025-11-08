@@ -47,7 +47,7 @@ export const uploadDP = createAsyncThunk(
   "user/uploadDp",
   async (userData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
+      const token = thunkAPI.getState().user.user.token;
       return await userAPI.uploadDP(userData, token);
     } catch (err) {
       const msg =
@@ -80,13 +80,80 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      (state.isLoading = false),
-        (state.isError = false),
-        (state.isSuccess = false),
-        (state.message = "");
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = false;
+      state.message = "";
     },
   },
-  extraReducers: (builders) => {
-    
+  extraReducers: (builder) => {
+    builder
+      .addCase(register.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      })
+
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      })
+
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+      })
+
+      /* getUser handlers */
+      .addCase(getUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(getUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      /* uploadDP handlers */
+      .addCase(uploadDP.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadDP.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        // assume API returns updated user object; update stored user
+        state.user = action.payload;
+      })
+      .addCase(uploadDP.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
   },
 });
+
+export const { reset } = userSlice.actions;
+export default userSlice.reducer;
