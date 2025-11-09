@@ -1,8 +1,50 @@
+import { useEffect, useState } from "react";
 import img from "../utils/logo.png";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import LoadingSpinner from "../Components/Spinner";
+
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { login, reset } from "../features/user/userSlice";
+
 const Login = () => {
+  const [formData, setFormData] = useState({
+    identifier: "",
+    password: "",
+  });
+
+  const { identifier, password } = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.user
+  );
+
+  useEffect(() => {
+    if (isError) toast.error(message);
+    if (isSuccess) navigate("/");
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const userData = {
+      identifier,
+      password,
+    };
+
+    dispatch(login(userData));
+  };
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-white via-gray-50 to-gray-100 text-gray-900">
+      {isLoading && <LoadingSpinner />}
       <div className="flex flex-col md:flex-row w-full max-w-6xl border border-gray-300 rounded-3xl shadow-2xl overflow-hidden bg-white">
         {/* Left Section (Visual / Branding) */}
         <section className="md:w-1/2 w-full flex flex-col items-center justify-center p-12 bg-linear-to-br from-gray-200 via-gray-100 to-white">
@@ -25,13 +67,16 @@ const Login = () => {
             Welcome Back 👋
           </h2>
 
-          <form className="flex flex-col space-y-6">
+          <form className="flex flex-col space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Username or Email
               </label>
               <input
                 type="text"
+                name="identifier"
+                value={identifier}
+                onChange={handleChange}
                 autoComplete="username"
                 placeholder="Enter your username or email"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
@@ -44,6 +89,9 @@ const Login = () => {
               </label>
               <input
                 type="password"
+                value={password}
+                name="password"
+                onChange={handleChange}
                 autoComplete="current-password"
                 placeholder="Enter your password"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"

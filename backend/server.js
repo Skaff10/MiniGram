@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/users", require("./routes/userRoutes"));
-app.use("/post", require("./routes/postRoutes"));
-app.use("/feed", require("./routes/feedRoutes"));
-app.use("/comment", require("./routes/commentRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/post", require("./routes/postRoutes"));
+app.use("/api/feed", require("./routes/feedRoutes"));
+app.use("/api/comment", require("./routes/commentRoutes"));
 
 app.use(errorHandler);
 
