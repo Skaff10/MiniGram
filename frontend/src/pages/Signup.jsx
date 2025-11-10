@@ -1,6 +1,53 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import img from "../utils/logo.png";
-const Register = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { register, reset } from "../features/user/userSlice";
+
+const Signup = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    user_name: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
+  });
+
+  const { name, user_name, email, password, confirmpassword } = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isError, isSuccess, isLoading, message } = useSelector(
+    (state) => state.user
+  );
+
+  useEffect(() => {
+    if (isError) toast.error(message);
+    if (isSuccess) navigate("/");
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, navigate, dispatch, message]);
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const userData = {
+      name,
+      user_name,
+      email,
+      password,
+      confirmpassword,
+    };
+    dispatch(register(userData));
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-white via-gray-50 to-gray-100 text-gray-900">
       <div className="flex flex-col md:flex-row w-full max-w-6xl border border-gray-300 rounded-3xl shadow-2xl overflow-hidden bg-white">
@@ -25,7 +72,7 @@ const Register = () => {
             Create Your Account
           </h2>
 
-          <form className="flex flex-col space-y-5">
+          <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 Name
@@ -33,6 +80,9 @@ const Register = () => {
               <input
                 type="text"
                 autoComplete="name"
+                name="name"
+                value={name}
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
               />
             </div>
@@ -43,7 +93,10 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                autoComplete="username"
+                autoComplete="user_name"
+                onChange={handleChange}
+                value={user_name}
+                name="user_name"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
               />
             </div>
@@ -55,6 +108,9 @@ const Register = () => {
               <input
                 type="email"
                 autoComplete="email"
+                onChange={handleChange}
+                value={email}
+                name="email"
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
               />
             </div>
@@ -66,6 +122,9 @@ const Register = () => {
               <input
                 type="password"
                 autoComplete="new-password"
+                value={password}
+                name="password"
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
               />
             </div>
@@ -77,6 +136,9 @@ const Register = () => {
               <input
                 type="password"
                 autoComplete="new-password"
+                value={confirmpassword}
+                name="confirmpassword"
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
               />
             </div>
@@ -105,4 +167,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Signup;
