@@ -3,4 +3,8 @@
 
 @theme {
   --color-loadingcolor: #faf9f6;
+  --breakpoint-mybrk : 90rem ;
+}
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }

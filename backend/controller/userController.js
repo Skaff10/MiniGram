@@ -43,7 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (!name || !user_name || !email || !password || !confirmpassword) {
     res.status(400);
-    throw new Error("Please Provide credentials");
+    throw new Error("Please Provide all the credentials");
   }
 
   const emailExist = await User.findOne({ email });
