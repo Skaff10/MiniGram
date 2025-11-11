@@ -1,24 +1,29 @@
-import { Link, useNavigate } from "react-router-dom";
-import img from "../utils/logo.png";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import logo from "../utils/logo.png";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { register, reset } from "../features/user/userSlice";
+import LoadingSpinner from "../Components/Spinner";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    user_name: "",
+    firstName: "",
+    lastName: "",
+    identifier: "",
     email: "",
     password: "",
     confirmpassword: "",
   });
-
-  const { name, user_name, email, password, confirmpassword } = formData;
+  const { firstName, lastName, user_name, email, password, confirmpassword } =
+    formData;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { user, isError, isSuccess, isLoading, message } = useSelector(
     (state) => state.user
   );
@@ -26,142 +31,176 @@ const Signup = () => {
   useEffect(() => {
     if (isError) toast.error(message);
     if (isSuccess) navigate("/");
-
     dispatch(reset());
-  }, [user, isError, isSuccess, navigate, dispatch, message]);
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "password") {
+      const strength = getPasswordStrength(value);
+      setPasswordStrength(strength);
+    }
   };
 
-  
+  const getPasswordStrength = (pass) => {
+    if (!pass) return "";
+    const strong = /^(?=.*[A-Z])(?=.*\d)(?=.*[@#$!%*?&]).{8,}$/;
+    const medium = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+    if (strong.test(pass)) return "strong";
+    if (medium.test(pass)) return "medium";
+    return "weak";
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const userData = {
-      name,
-      user_name,
+      name: `${firstName} ${lastName}`,
       email,
+      user_name,
       password,
       confirmpassword,
     };
+
     dispatch(register(userData));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-white via-gray-50 to-gray-100 text-gray-900">
-      <div className="flex flex-col md:flex-row w-full max-w-6xl border border-gray-300 rounded-3xl shadow-2xl overflow-hidden bg-white">
-        {/* Left Section (Visual / Branding) */}
-        <section className="md:w-1/2 w-full flex flex-col items-center justify-center p-12 bg-linear-to-br from-gray-200 via-gray-100 to-white">
-          <div
-            style={{ backgroundImage: `url(${img})` }}
-            className={`ml-5 mb-10 w-72 h-72  bg-cover bg-center`}
-          ></div>
-          <h1 className="text-5xl font-extrabold text-black mb-4 tracking-tight">
-            MiniGram
-          </h1>
-          <p className="text-gray-600 text-lg max-w-md text-center leading-relaxed">
-            Capture moments. Connect with people. Create your story — one post
-            at a time.
-          </p>
-        </section>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-black via-gray-900 to-black text-gray-900">
+      {isLoading && <LoadingSpinner />}
 
-        {/* Right Section (Form) */}
-        <section className="md:w-1/2 w-full p-12 flex flex-col justify-center">
-          <h2 className="text-4xl font-semibold mb-8 text-center text-black">
-            Create Your Account
-          </h2>
+      {/* Logo & Title */}
+      <div className="flex flex-col items-center mb-6">
+        <img src={logo} alt="MiniGram" className="w-20 h-20 mb-3" />
+        <h1 className="text-3xl font-bold text-white tracking-wide">
+          MINIGRAM
+        </h1>
+      </div>
 
-          <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Name
-              </label>
-              <input
-                type="text"
-                autoComplete="name"
-                name="name"
-                value={name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
-              />
-            </div>
+      {/* Signup Card */}
+      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-8">
+        <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                type="text"
-                autoComplete="user_name"
-                onChange={handleChange}
-                value={user_name}
-                name="user_name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
-              />
-            </div>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          {/* First & Last Name */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="firstName"
+              value={firstName}
+              onChange={handleChange}
+              placeholder="First Name"
+              className="w-1/2 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
+            <input
+              type="text"
+              name="lastName"
+              value={lastName}
+              onChange={handleChange}
+              placeholder="Last Name"
+              className="w-1/2 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
+          </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                autoComplete="email"
-                onChange={handleChange}
-                value={email}
-                name="email"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
-              />
-            </div>
+          {/* Username */}
+          <input
+            type="text"
+            name="user_name"
+            value={user_name}
+            onChange={handleChange}
+            placeholder="Username"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                name="password"
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
-              />
-            </div>
+          {/* Email */}
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleChange}
+            placeholder="Email"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
+          />
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                autoComplete="new-password"
-                value={confirmpassword}
-                name="confirmpassword"
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-black transition duration-300"
-              />
-            </div>
-
+          {/* Password */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 pr-10"
+            />
             <button
-              type="submit"
-              className="w-full py-3 mt-2 bg-black text-white rounded-xl font-semibold text-lg hover:bg-gray-800 transition duration-300 shadow-sm"
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-2 text-gray-500"
             >
-              Sign Up
+              {showPassword ? (
+                <EyeOff size={18} className="cursor-pointer" />
+              ) : (
+                <Eye size={18} className="cursor-pointer" />
+              )}
             </button>
-          </form>
+          </div>
 
-          <p className="text-sm text-gray-500 text-center mt-6">
-            Already on{" "}
-            <span className="font-semibold text-black">MiniGram</span>?{" "}
-            <Link
-              to="/login"
-              className="underline hover:text-gray-700 transition"
+          {/* Password Strength */}
+          {password && (
+            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${
+                  passwordStrength === "strong"
+                    ? "bg-green-500 w-full"
+                    : passwordStrength === "medium"
+                    ? "bg-yellow-400 w-2/3"
+                    : "bg-red-500 w-1/3"
+                }`}
+              ></div>
+            </div>
+          )}
+
+          {/* Confirm Password */}
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmpassword"
+              value={confirmpassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-2 top-2 text-gray-500"
             >
-              Log in
-            </Link>
-          </p>
-        </section>
+              {showConfirmPassword ? (
+                <EyeOff size={18} className="cursor-pointer" />
+              ) : (
+                <Eye size={18} className="cursor-pointer" />
+              )}
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm py-2 rounded-lg transition duration-300"
+          >
+            Sign Up
+          </button>
+        </form>
+
+        <p className="text-center text-sm mt-5 text-gray-700">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-black hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
