@@ -1,50 +1,38 @@
-import { Heart, MessageCircle } from "lucide-react"; // Using lucide-react for icons
+import { timeAgo } from "../../utils/timeAgo";
+import { Heart, MessageCircle} from "lucide-react";
 
-const PostCard = ({ userName = "user_name", time = "2h" }) => {
+const PostCard = ({ post }) => {
   return (
-    <div className="mb-8 p-4 border border-gray-700 rounded-xl bg-gray-800 shadow-lg">
-      {/* Post Header (user_name, time) */}
-      <div className="flex items-center space-x-3 mb-3">
-        {/* Avatar Placeholder */}
-        <div className="w-8 h-8 rounded-full bg-blue-500 border border-blue-400"></div>
-        <div className="grow">
-          <span className="font-semibold text-white">{userName}</span>
-          <span className="text-xs text-gray-500 ml-2">{time}</span>
-        </div>
+    <div className="border border-gray-700 rounded-2xl p-4 bg-gray-900 text-white mb-1">
+      <div className="flex items-center gap-3 mb-3">
+        <img
+          src={post.user?.profilePic || "/nouser.png"}
+          alt={post.user?.user_name}
+          className="w-7 h-7 rounded-full"
+        />
+        <h2 className="font-semibold text-lg">{post.user?.user_name}</h2>
+        <span className="ml-auto text-gray-400 text-sm">
+          {timeAgo(post.createdAt)}
+        </span>
       </div>
 
-      {/* Post Image/Content Area */}
-      <div className="w-full bg-gray-900 aspect-square flex items-center justify-center border border-pink-500">
-        {/* Placeholder for the image or video */}
-        <p className="text-pink-500 text-6xl font-light italic">///</p>
-      </div>
+      {post.text && <p className="mb-3">{post.text}</p>}
+      {post.image?.url && (
+        <img
+          src={post.image.url}
+          alt="post image"
+          className="w-full rounded-xl mb-3 object-cover"
+        />
+      )}
 
-      {/* Actions and Comment Input */}
-      <div className="pt-3">
-        {/* Like and Comment Icons */}
-        <div className="flex items-center space-x-4 mb-3">
-          {/* Like Button (Heart) */}
-          <button className="text-pink-500 hover:text-red-500 transition">
-            <Heart size={24} fill="currentColor" />
-          </button>
-
-          {/* Comment Icon */}
-          <button className="text-gray-400 hover:text-white transition">
-            <MessageCircle size={24} />
-          </button>
-        </div>
-
-        {/* Comment Input Box */}
-        <div className="border border-red-400 rounded-full p-2 flex items-center">
-          <input
-            type="text"
-            placeholder="Add a comment..."
-            className="grow bg-transparent text-sm focus:outline-none placeholder-gray-500 px-1"
-          />
-          <button className="text-xs text-red-400 font-medium hover:text-red-300 transition ml-2">
-            Comment
-          </button>
-        </div>
+      <div className="flex items-center gap-6 text-gray-400 justify-between">
+        <button className="transition flex gap-1">
+          <Heart className="hover:text-pink-500" />
+          {post.likes?.length || 0}
+        </button>
+        <button className="transition flex gap-1">
+          <MessageCircle className="hover:text-blue-400" />
+        </button>
       </div>
     </div>
   );

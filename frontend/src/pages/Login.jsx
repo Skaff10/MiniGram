@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import logo from "../utils/logo.png";
 import { toast } from "react-toastify";
-import LoadingSpinner from "../Components/Spinner";
+import LoadingSpinner from "../utils/Spinner";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login, reset } from "../features/user/userSlice";
@@ -49,7 +48,7 @@ const Login = () => {
 
       {/* Logo & Title */}
       <div className="flex flex-col items-center mb-6">
-        <img src={logo} alt="MiniGram" className="w-20 h-20 mb-3" />
+        <img src="/logo.png" alt="MiniGram" className="w-20 h-20 mb-3" />
         <h1 className="text-3xl font-bold text-white tracking-wide">
           MINIGRAM
         </h1>

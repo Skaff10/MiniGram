@@ -1,43 +1,33 @@
-import { useState } from "react";
-import logo from "../../utils/logo.png";
-import { ChevronRight, ChevronLeft } from "lucide-react"; // Using lucide-react for icons
 
+import { FaPlus } from "react-icons/fa6";
+import { CiSearch } from "react-icons/ci";
+import { CgProfile } from "react-icons/cg";
+import { GoHomeFill } from "react-icons/go";
+import { Link } from "react-router-dom";
 const Sidebar = () => {
-  const navItems = ["Home", "Search", "Post", "Profile"];
-  const [leftright, setLeftright] = useState(true);
+  const navItems = ["Home", "Search", "Create", "Profile"];
+  const navLogos = [<GoHomeFill className="size-7" />, <CiSearch className="size-7" />, <FaPlus className="size-7" />, <CgProfile className="size-7" />];
   return (
     <div className="w-1/5 mybrk:w-1/10 p-4 border-r border-gray-700 flex flex-col justify-between">
       <div>
         <div className="relative">
           <section className="flex relative">
-            <img src={logo} className="size-10 " alt="" />
+            <img src="/logo.png" className="size-10 " alt="" />
             <h2 className="text-2xl font-extrabold mb-8 mt-1 ml-2">MiniGram</h2>
           </section>
-
-          <button
-            className="absolute right-1 top-2  "
-            onClick={() => {
-              setLeftright(!leftright);
-            }}
-          >
-            {leftright ? <ChevronLeft /> : <ChevronRight />}
-          </button>
         </div>
 
         <nav className="space-y-4">
-          {navItems.map((item) => (
-            <a
+          {navItems.map((item, index) => (
+            <Link
               key={item}
-              href={`#${item.toLowerCase()}`}
-              className={`block text-lg font-medium p-2 rounded-lg transition duration-200 
-                ${
-                  item === "Home"
-                    ? "text-green-400 bg-gray-800"
-                    : "text-gray-300 hover:text-white hover:bg-gray-800"
-                }`}
+              to={item === "Home" ? `/` : `/${item}`}
+              className={`flex gap-2 items-center text-lg font-medium p-2 rounded-lg transition duration-200 
+               hover:text-green-400`}
             >
-              {item}
-            </a>
+              {navLogos[index]} 
+              <span className="">{item}</span>
+            </Link>
           ))}
         </nav>
       </div>

@@ -7,13 +7,18 @@ const getProfilePost = async (token) => {
     },
   };
 
-  const res = await axios.get("/feed/profileposts", config);
+  const res = await axios.get("api/feed/profileposts", config);
   return res.data;
 };
 
 const getFeedPost = async () => {
-  const res = await axios.get("/feed/feedposts");
+  const res = await axios.get("api/feed/feedposts");
   return res.data;
 };
 
+const feedApi = {
+  getFeedPost,
+  getProfilePost,
+};
 
+export default feedApi;
