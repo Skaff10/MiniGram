@@ -20,6 +20,12 @@ const userSchema = mongoose.Schema(
     profilePic: {
       type: String,
     },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
   },
   {
     timestamps: true,

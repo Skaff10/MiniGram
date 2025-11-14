@@ -28,13 +28,18 @@ const uploadDP = async (userData, token) => {
   return res.data;
 };
 
-const getUser = async (id) => {
-  const res = await axios.get(API_URL + "getuser/" + id);
+const getUser = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.get(API_URL + "getuser/" + id, config);
 
   return res.data;
 };
 
-const UserAPI = {
+const userAPI = {
   register,
   login,
   logout,
@@ -42,4 +47,4 @@ const UserAPI = {
   getUser,
 };
 
-export default UserAPI;
+export default userAPI;

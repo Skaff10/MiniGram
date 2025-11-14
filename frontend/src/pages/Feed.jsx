@@ -1,5 +1,5 @@
-import Sidebar from "../Components/Feed/Sidebar";
-import PostCard from "../Components/Feed/PostCard";
+import Sidebar from "../Components/Sidebar";
+import PostCard from "../Components/PostCard";
 import LoadingSpinner from "../utils/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -17,15 +17,14 @@ const Feed = () => {
     if (!localStorage.getItem("user")) {
       toast.info("Please login First");
       navigate("/login");
-      return; 
+      return;
     }
     if (isError) toast.error(message);
-    console.log("Posts in feed:", posts);
     dispatch(fetchPosts());
     return () => {
       dispatch(reset());
     };
-  }, [dispatch, isError, message , navigate]);
+  }, [dispatch, isError, message, navigate]);
 
   return (
     <div className="flex h-screen bg-gray-900 text-gray-200 overflow-hidden">

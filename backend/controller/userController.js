@@ -34,7 +34,13 @@ const getUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
-  res.status(200).json(user);
+  res.status(200).json({
+    user_name: user.user_name,
+    name: user.name,
+    posts: user.posts,
+    profilePic: user.profilePic,
+    posts: user.posts,
+  });
 });
 
 //Register User
@@ -103,6 +109,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
+      _id: user.id,
       username: user.user_name,
       email: user.email,
       token: generateToken(user._id),

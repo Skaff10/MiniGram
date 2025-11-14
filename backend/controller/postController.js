@@ -33,6 +33,10 @@ const createPost = asyncHandler(async (req, res) => {
     image: imageData,
   });
 
+  await User.findByIdAndUpdate(req.user._id, {
+    $push: { posts: post._id },
+  });
+
   await post.populate("user", "user_name profilePic");
   res.status(201).json(post);
 });

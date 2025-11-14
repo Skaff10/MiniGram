@@ -1,5 +1,5 @@
-import { timeAgo } from "../../utils/timeAgo";
-import { Heart, MessageCircle} from "lucide-react";
+import { timeAgo } from "../utils/timeAgo";
+import { Heart, MessageCircle } from "lucide-react";
 
 const PostCard = ({ post }) => {
   return (

@@ -1,4 +1,3 @@
-
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
@@ -6,7 +5,12 @@ import { GoHomeFill } from "react-icons/go";
 import { Link } from "react-router-dom";
 const Sidebar = () => {
   const navItems = ["Home", "Search", "Create", "Profile"];
-  const navLogos = [<GoHomeFill className="size-7" />, <CiSearch className="size-7" />, <FaPlus className="size-7" />, <CgProfile className="size-7" />];
+  const navLogos = [
+    <GoHomeFill className="size-7" />,
+    <CiSearch className="size-7" />,
+    <FaPlus className="size-7" />,
+    <CgProfile className="size-7" />,
+  ];
   return (
     <div className="w-1/5 mybrk:w-1/10 p-4 border-r border-gray-700 flex flex-col justify-between">
       <div>
@@ -25,14 +29,12 @@ const Sidebar = () => {
               className={`flex gap-2 items-center text-lg font-medium p-2 rounded-lg transition duration-200 
                hover:text-green-400`}
             >
-              {navLogos[index]} 
+              {navLogos[index]}
               <span className="">{item}</span>
             </Link>
           ))}
         </nav>
       </div>
-
-      {/* Settings Button */}
       <button className="w-full py-2 px-4 border border-gray-600 rounded-lg text-sm font-semibold hover:bg-gray-800 transition duration-200">
         Settings
       </button>

@@ -64,7 +64,8 @@ export const getUser = createAsyncThunk(
   "user/getUser",
   async (id, thunkAPI) => {
     try {
-      return await userAPI.getUser(id);
+      const token = thunkAPI.getState().user.user.token;
+      return await userAPI.getUser(id, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -130,7 +131,7 @@ export const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload;
+        state.user = { ...action.payload, token: state.user?.token };
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;
