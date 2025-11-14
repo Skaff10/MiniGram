@@ -22,6 +22,7 @@ const Profile = () => {
       navigate("/login");
       return;
     }
+    if (isError) toast.error(message);
     dispatch(getUser(id));
   }, [dispatch, message, navigate]);
   return (
