@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const API_URL = "/post/";
+const API_URL = "api/post/";
 
 const createPost = async (postData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
+      // REMOVE "Content-Type": "multipart/form-data" - let axios auto-detect FormData
     },
   };
   const res = await axios.post(API_URL + "createpost", postData, config);
@@ -38,7 +39,7 @@ const likePost = async (id, token) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const res = await axios.put(API_URL + "like/" + id, config);
+  const res = await axios.put(API_URL + "like/" + id, {}, config); // Add {} as data
 
   return res.data;
 };

@@ -5,7 +5,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Feed from "./pages/Feed";
 import Signup from "./pages/Signup";
-
+import Create from "./pages/Create";
 const App = () => {
   return (
     <>
@@ -14,7 +14,8 @@ const App = () => {
           <Route path="/" element={<Feed />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Create" element={<Create />} />
         </Routes>
       </Router>
       <ToastContainer />
