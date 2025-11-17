@@ -22,6 +22,7 @@ const getProfilePost = asyncHandler(async (req, res) => {
     post.likeCount = post.likes.length;
   }
 
+  
   res.status(200).json(posts);
 });
 
