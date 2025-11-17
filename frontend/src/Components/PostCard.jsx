@@ -1,7 +1,23 @@
+import { Heart } from "lucide-react";
+import { FaHeart } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { toggleLike, toggleLikeLocally } from "../features/feed/feedSlice";
 import { timeAgo } from "../utils/timeAgo";
-import { Heart, MessageCircle } from "lucide-react";
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
+  const userId = JSON.parse(localStorage.getItem("user"))._id;
+
+  const liked = post.likes?.includes(userId);
+  const likes = post.likes?.length || 0;
+
+  const handleClick = () => {
+    // 1. Update UI immediately (pass userId)
+    dispatch(toggleLikeLocally({ postId: post._id, userId }));
+    // 2. Send API request to backend
+    dispatch(toggleLike(post._id));
+  };
+
   return (
     <div className="border border-gray-700 rounded-2xl p-4 bg-gray-900 text-white mb-1">
       <div className="flex items-center gap-3 mb-3">
@@ -17,6 +33,7 @@ const PostCard = ({ post }) => {
       </div>
 
       {post.text && <p className="mb-3">{post.text}</p>}
+
       {post.image?.url && (
         <img
           src={post.image.url}
@@ -25,13 +42,17 @@ const PostCard = ({ post }) => {
         />
       )}
 
-      <div className="flex items-center gap-6 text-gray-400 justify-between">
-        <button className="transition flex gap-1">
-          <Heart className="hover:text-pink-500" />
-          {post.likes?.length || 0}
-        </button>
-        <button className="transition flex gap-1">
-          <MessageCircle className="hover:text-blue-400" />
+      <div className="flex items-center gap-6 text-gray-400 justify-start">
+        <button
+          onClick={handleClick}
+          className="transition flex items-center gap-1"
+        >
+          {liked ? (
+            <FaHeart className="text-pink-500 w-5 h-5" />
+          ) : (
+            <Heart className="w-5 h-5 hover:text-pink-500" />
+          )}
+          <span>{likes}</span>
         </button>
       </div>
     </div>

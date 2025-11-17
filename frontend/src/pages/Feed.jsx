@@ -25,13 +25,10 @@ const Feed = () => {
       dispatch(reset());
     };
   }, [dispatch, isError, message, navigate]);
-
   return (
     <div className="flex h-screen bg-gray-900 text-gray-200 overflow-hidden">
       {isLoading && <LoadingSpinner />}
-
       <Sidebar />
-
       <div className="flex flex-col flex-auto max-w-2xl mx-auto border-x border-gray-700 overflow-hidden">
         <div className="p-4 sticky top-0 bg-gray-900 z-10">
           <h1 className="text-3xl font-bold text-green-400">MiniGram</h1>
@@ -41,7 +38,6 @@ const Feed = () => {
             posts.map((post) => <PostCard key={post._id} post={post} />)}
         </div>
       </div>
-
       <div className="w-1/4 p-4 hidden lg:block border-l border-gray-900">
         <p className="text-gray-500">Chatting Will be added later</p>
       </div>

@@ -125,11 +125,7 @@ const likeDislikePost = asyncHandler(async (req, res) => {
 
   const updatedPost = await post.save();
 
-  res.status(200).json({
-    postId: updatedPost._id,
-    likesCount: updatedPost.likes.length,
-    likedByUser: !alreadyLiked,
-  });
+  res.status(200).json(updatedPost);
 });
 
 module.exports = {

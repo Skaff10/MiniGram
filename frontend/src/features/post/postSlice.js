@@ -1,7 +1,5 @@
-// src/features/posts/postSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import postAPI from "./postAPI";
-import { act } from "react";
 
 const initialState = {
   posts: [],
@@ -45,7 +43,6 @@ export const fetchPost = createAsyncThunk(
   }
 );
 
-// DELETE POST
 export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id, thunkAPI) => {
@@ -122,10 +119,23 @@ export const postSlice = createSlice({
         state.posts = state.posts.filter((p) => p._id !== action.payload.id);
       })
       .addCase(toggleLike.fulfilled, (state, action) => {
-        const updated = action.payload;
-        state.posts = state.posts.map((p) =>
-          p._id === updated._id ? updated : p
+        state.isLoading = false;
+        const updatedPost = action.payload; // Assumes this is the full updated post object
+
+        // 1. GUARANTEED IMMUTABILITY FIX for the list view (used by Feed component)
+        // We replace the post in the array by creating a NEW array reference (.map)
+        state.posts = state.posts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
         );
+
+        // 2. Update the single post state (if applicable)
+        if (state.singlePost && state.singlePost._id === updatedPost._id) {
+          state.singlePost = updatedPost;
+        }
+      })
+
+      .addCase(toggleLike.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

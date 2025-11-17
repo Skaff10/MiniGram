@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import feedApi from "./feedAPI";
-
 const initialState = {
   posts: [],
   isLoading: false,
@@ -40,7 +39,21 @@ export const fetchProfilePosts = createAsyncThunk(
     }
   }
 );
-
+export const toggleLike = createAsyncThunk(
+  "feed/toggleLike",
+  async (postId, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().user.user.token;
+      return await feedApi.likePost(postId, token); // API call returns updated post
+    } catch (err) {
+      const msg =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
 export const feedSlice = createSlice({
   name: "feed",
   initialState,
@@ -50,6 +63,27 @@ export const feedSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
+    },
+    // { changed code }
+    // accept { postId, userId } so reducer can update likes immediately
+    toggleLikeLocally: (state, action) => {
+      const { postId, userId } = action.payload;
+
+      state.posts = state.posts.map((post) => {
+        if (post._id === postId) {
+          const likedAlready = post.likes.includes(userId);
+          let newLikes;
+          if (likedAlready) {
+            // Remove user id exactly once
+            newLikes = post.likes.filter((id) => id !== userId);
+          } else {
+            // Add user id only if not present
+            newLikes = [...post.likes, userId];
+          }
+          return { ...post, likes: newLikes };
+        }
+        return post;
+      });
     },
   },
   extraReducers: (builder) => {
@@ -79,9 +113,18 @@ export const feedSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(toggleLike.fulfilled, (state, action) => {
+        const updatedPost = action.payload;
+        state.posts = state.posts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
+        );
+      })
+      .addCase(toggleLike.rejected, (state) => {
+        state.isLoading = false;
+        // Optionally handle rollback or error message
       });
   },
 });
-
-export const { reset } = feedSlice.actions;
+export const { reset, toggleLikeLocally } = feedSlice.actions;
 export default feedSlice.reducer;

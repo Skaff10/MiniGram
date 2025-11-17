@@ -16,9 +16,20 @@ const getFeedPost = async () => {
   return res.data;
 };
 
+const likePost = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.put("api/post/like/" + id, {}, config);
+  return res.data;
+};
+
 const feedApi = {
   getFeedPost,
   getProfilePost,
+  likePost,
 };
 
 export default feedApi;

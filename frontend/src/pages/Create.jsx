@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../features/post/postSlice";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../utils/Spinner";
+import Sidebar from "../Components/Sidebar";
 
 const Create = () => {
   const dispatch = useDispatch();
@@ -47,41 +48,43 @@ const Create = () => {
   };
 
   return (
-    <section className="w-full max-w-4xl mx-auto mt-10 p-6 bg-gray-900 rounded-2xl shadow-xl flex flex-col gap-4 text-white">
+    <div className="flex h-screen overflow-hidden">
       {isLoading && <LoadingSpinner />}
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="What's on your mind?"
-          className="w-full p-4 rounded-xl bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={4}
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="text-white"
-        />
-
-        {preview && (
-          <img
-            src={preview}
-            alt="preview"
-            className="w-full max-h-80 object-cover rounded-xl border border-gray-700"
+      <Sidebar />
+      <section className="w-full max-w-4xl h-68 mx-auto mt-10 p-6 bg-gray-900 rounded-2xl shadow-xl flex flex-col gap-4 text-white">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="What's on your mind?"
+            className="w-full p-4 rounded-xl bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
           />
-        )}
 
-        <button
-          type="submit"
-          className="self-end px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition"
-        >
-          Post
-        </button>
-      </form>
-    </section>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="text-white"
+          />
+
+          {preview && (
+            <img
+              src={preview}
+              alt="preview"
+              className="w-full max-h-80 object-cover rounded-xl border border-gray-700"
+            />
+          )}
+
+          <button
+            type="submit"
+            className="self-end px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition"
+          >
+            Post
+          </button>
+        </form>
+      </section>
+    </div>
   );
 };
 
