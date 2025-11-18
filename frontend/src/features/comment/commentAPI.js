@@ -7,7 +7,11 @@ const createComment = async (comData, id, token) => {
     },
   };
 
-  const res = await axios.post("/comment/createcomment/" + id, comData, config);
+  const res = await axios.post(
+    "/api/comment/createcomment/" + id,
+    comData,
+    config
+  );
   return res.data;
 };
 const updateComment = async (comData, id, token) => {
@@ -18,7 +22,7 @@ const updateComment = async (comData, id, token) => {
   };
 
   const res = await axios.update(
-    "/comment/updatecomment/" + id,
+    "/api/comment/updatecomment/" + id,
     comData,
     config
   );
@@ -31,7 +35,7 @@ const deleteComment = async (id, token) => {
     },
   };
 
-  const res = await axios.post("/comment/deletecomment/" + id, config);
+  const res = await axios.post("/api/comment/deletecomment/" + id, config);
   return res.data;
 };
 

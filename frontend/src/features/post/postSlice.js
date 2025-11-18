@@ -10,7 +10,6 @@ const initialState = {
   message: "",
 };
 
-// CREATE POST
 export const createPost = createAsyncThunk(
   "posts/create",
   async (postData, thunkAPI) => {
@@ -27,12 +26,12 @@ export const createPost = createAsyncThunk(
   }
 );
 
-// FETCH SINGLE POST
 export const fetchPost = createAsyncThunk(
   "posts/fetchOne",
   async (id, thunkAPI) => {
     try {
-      return await postAPI.getPost(id);
+      const token = thunkAPI.getState().user.user.token;
+      return await postAPI.getPost(id, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -49,23 +48,6 @@ export const deletePost = createAsyncThunk(
     try {
       const token = thunkAPI.getState().user.user.token;
       return await postAPI.deletePost(id, token);
-    } catch (err) {
-      const msg =
-        (err.response && err.response.data && err.response.data.message) ||
-        err.message ||
-        err.toString();
-      return thunkAPI.rejectWithValue(msg);
-    }
-  }
-);
-
-// LIKE / UNLIKE
-export const toggleLike = createAsyncThunk(
-  "posts/toggleLike",
-  async (id, thunkAPI) => {
-    try {
-      const token = thunkAPI.getState().user.user.token;
-      return await postAPI.likePost(id, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -114,28 +96,8 @@ export const postSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter((p) => p._id !== action.payload.id);
-      })
-      .addCase(toggleLike.fulfilled, (state, action) => {
-        state.isLoading = false;
-        const updatedPost = action.payload; // Assumes this is the full updated post object
-
-        // 1. GUARANTEED IMMUTABILITY FIX for the list view (used by Feed component)
-        // We replace the post in the array by creating a NEW array reference (.map)
-        state.posts = state.posts.map((post) =>
-          post._id === updatedPost._id ? updatedPost : post
-        );
-
-        // 2. Update the single post state (if applicable)
-        if (state.singlePost && state.singlePost._id === updatedPost._id) {
-          state.singlePost = updatedPost;
-        }
-      })
-
-      .addCase(toggleLike.rejected, (state) => {
-        state.isLoading = false;
       });
   },
 });
