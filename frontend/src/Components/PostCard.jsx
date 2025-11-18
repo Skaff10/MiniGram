@@ -4,6 +4,8 @@ import { MessageCircle } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toggleLike, toggleLikeLocally } from "../features/feed/feedSlice";
 import { timeAgo } from "../utils/timeAgo";
+import Comment from "./Comment";
+import { useState } from "react";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -19,6 +21,8 @@ const PostCard = ({ post }) => {
     // 2. Send API request to backend
     dispatch(toggleLike(post._id));
   };
+
+  const [showCommentInput, setShowCommentInput] = useState(false);
 
   return (
     <div className="border border-gray-700 rounded-2xl p-4 bg-gray-900 text-white mb-1">
@@ -56,10 +60,11 @@ const PostCard = ({ post }) => {
           )}
           <span>{likes}</span>
         </button>
-        <button>
+        <button onClick={() => setShowCommentInput((s) => !s)}>
           <MessageCircle className="w-5 h-5 cursor-pointer" />
         </button>
       </div>
+      <Comment post={post} showInputFromParent={showCommentInput} />
     </div>
   );
 };

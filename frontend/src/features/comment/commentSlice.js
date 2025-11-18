@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import commentAPI from "./commentAPI";
-import { act } from "react";
 
 const initialState = {
   comments: [],
@@ -9,12 +8,15 @@ const initialState = {
   isError: false,
   message: "",
 };
+
 export const createComment = createAsyncThunk(
   "comment/create",
-  async (data, id, thunkAPI) => {
+  // payload arg will be the comment data: { postId, text, ... }
+  async (data, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.user.token;
-      return await commentAPI.createComment(data, id, token);
+      // call API with (data, token)
+      return await commentAPI.createComment(data, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -24,12 +26,14 @@ export const createComment = createAsyncThunk(
     }
   }
 );
+
 export const updateComment = createAsyncThunk(
   "comment/update",
-  async (data, id, thunkAPI) => {
+  // expect arg like { id, data }
+  async ({ id, data }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.user.token;
-      return await commentAPI.updateComment(data, id, token);
+      return await commentAPI.updateComment(id, data, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -39,12 +43,13 @@ export const updateComment = createAsyncThunk(
     }
   }
 );
+
 export const deleteComment = createAsyncThunk(
   "comment/delete",
   async (id, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.user.token;
-      return await commentAPI.updateComment(id, token);
+      return await commentAPI.deleteComment(id, token);
     } catch (err) {
       const msg =
         (err.response && err.response.data && err.response.data.message) ||
@@ -56,7 +61,7 @@ export const deleteComment = createAsyncThunk(
 );
 
 export const commentSlice = createSlice({
-  name: "feed",
+  name: "comments",
   initialState,
   reducers: {
     reset: (state) => {
