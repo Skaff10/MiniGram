@@ -12,7 +12,8 @@ const createComment = async (comData, id, token) => {
     comData,
     config
   );
-  return res.data;
+  
+  return res.data ;
 };
 const updateComment = async (comData, id, token) => {
   const config = {
