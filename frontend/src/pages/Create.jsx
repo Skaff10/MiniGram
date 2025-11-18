@@ -1,19 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost } from "../features/post/postSlice";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../utils/Spinner";
 import Sidebar from "../Components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const Create = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
   const { isLoading } = useSelector((state) => state.posts);
-
+  const choosefile = useRef();
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-
+  const navigate = useNavigate();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -42,16 +42,20 @@ const Create = () => {
       setText("");
       setImage(null);
       setPreview(null);
+      navigate("/");
     } catch (err) {
       toast.error(err || "Something went wrong");
     }
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-screen ">
+
       {isLoading && <LoadingSpinner />}
       <Sidebar />
-      <section className="w-full max-w-4xl h-68 mx-auto mt-10 p-6 bg-gray-900 rounded-2xl shadow-xl flex flex-col gap-4 text-white">
+      <section className="w-full max-w-4xl mx-auto mt-10 p-6 bg-gray-900 rounded-2xl shadow-xl flex flex-col gap-4 text-white self-start">
+        {" "}
+        {/* changed: self-start so section height follows content */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <textarea
             value={text}
@@ -65,20 +69,26 @@ const Create = () => {
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="text-white"
+            className="text-white hidden"
+            ref={choosefile}
           />
-
+          <div
+            onClick={() => choosefile.current.click()}
+            className="self-start px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition cursor-pointer"
+          >
+            Choose File
+          </div>
           {preview && (
             <img
               src={preview}
               alt="preview"
-              className="w-full max-h-80 object-cover rounded-xl border border-gray-700"
+              className="w-full h-auto rounded-xl border border-gray-700"
             />
           )}
 
           <button
             type="submit"
-            className="self-end px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition"
+            className="self-end px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition cursor-pointer"
           >
             Post
           </button>

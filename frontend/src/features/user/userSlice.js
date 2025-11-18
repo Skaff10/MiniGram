@@ -40,7 +40,7 @@ export const login = createAsyncThunk("user/login", async (user, thunkAPI) => {
   }
 });
 export const logout = createAsyncThunk("user/logout", async () => {
-  await userAPI.logout();
+   userAPI.logout();
 });
 
 export const uploadDP = createAsyncThunk(

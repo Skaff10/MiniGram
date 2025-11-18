@@ -3,6 +3,11 @@ import { CiSearch } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { GoHomeFill } from "react-icons/go";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logout } from "../features/user/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 const Sidebar = () => {
   const navItems = ["Home", "Search", "Create", "Profile"];
   const navLogos = [
@@ -11,6 +16,15 @@ const Sidebar = () => {
     <FaPlus className="size-7" />,
     <CgProfile className="size-7" />,
   ];
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.info("Logout Succesfully");
+    navigate("/login");
+  };
+
   return (
     <div className="w-1/5 mybrk:w-1/10 p-4 border-r border-gray-700 flex flex-col justify-between">
       <div>
@@ -35,8 +49,11 @@ const Sidebar = () => {
           ))}
         </nav>
       </div>
-      <button className="w-full py-2 px-4 border border-gray-600 rounded-lg text-sm font-semibold hover:bg-gray-800 transition duration-200">
-        Settings
+      <button
+        className="w-full py-2 px-4 border border-gray-600 rounded-lg text-sm font-semibold hover:bg-gray-800 transition duration-200"
+        onClick={handleLogout}
+      >
+        Logout
       </button>
     </div>
   );

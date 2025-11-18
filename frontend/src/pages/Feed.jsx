@@ -2,16 +2,20 @@ import Sidebar from "../Components/Sidebar";
 import PostCard from "../Components/PostCard";
 import LoadingSpinner from "../utils/Spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchPosts, reset } from "../features/feed/feedSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import CreateCard from "../Components/CreateCard";
+
 const Feed = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { posts, isLoading, isError, message } = useSelector(
     (state) => state.feed
   );
+
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!localStorage.getItem("user")) {
@@ -24,7 +28,13 @@ const Feed = () => {
     return () => {
       dispatch(reset());
     };
-  }, [dispatch, isError, message, navigate]);
+  }, [dispatch, isError, message, navigate, reloadKey]); 
+
+
+  const handlePostCreated = () => {
+    setReloadKey(prev => prev + 1); 
+  };
+
   return (
     <div className="flex h-screen bg-gray-900 text-gray-200 overflow-hidden">
       {isLoading && <LoadingSpinner />}
@@ -34,6 +44,7 @@ const Feed = () => {
           <h1 className="text-3xl font-bold text-green-400">MiniGram</h1>
         </div>
         <div className="p-4 overflow-y-auto no-scrollbar grow">
+          <CreateCard onPostCreated={handlePostCreated} />
           {Array.isArray(posts) &&
             posts.map((post) => <PostCard key={post._id} post={post} />)}
         </div>

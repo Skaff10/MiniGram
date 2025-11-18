@@ -1,12 +1,14 @@
 import { Heart } from "lucide-react";
 import { FaHeart } from "react-icons/fa";
+import { MessageCircle } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toggleLike, toggleLikeLocally } from "../features/feed/feedSlice";
 import { timeAgo } from "../utils/timeAgo";
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
-  const userId = JSON.parse(localStorage.getItem("user"))._id;
+  const u = JSON.parse(localStorage.getItem("user"));
+  const userId = u ? u._id : null;
 
   const liked = post.likes?.includes(userId);
   const likes = post.likes?.length || 0;
@@ -42,17 +44,20 @@ const PostCard = ({ post }) => {
         />
       )}
 
-      <div className="flex items-center gap-6 text-gray-400 justify-start">
+      <div className="flex items-center gap-6 text-gray-400 justify-between">
         <button
           onClick={handleClick}
           className="transition flex items-center gap-1"
         >
           {liked ? (
-            <FaHeart className="text-pink-500 w-5 h-5" />
+            <FaHeart className="text-pink-500 w-5 h-5 cursor-pointer" />
           ) : (
-            <Heart className="w-5 h-5 hover:text-pink-500" />
+            <Heart className="w-5 h-5 hover:text-pink-500 cursor-pointer" />
           )}
           <span>{likes}</span>
+        </button>
+        <button>
+          <MessageCircle className="w-5 h-5 cursor-pointer" />
         </button>
       </div>
     </div>
