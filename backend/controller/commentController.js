@@ -3,21 +3,36 @@ const Post = require("../models/postModel");
 const asyncHandler = require("express-async-handler");
 
 const createComment = asyncHandler(async (req, res) => {
-  const { text } = req.body;
-  const { id } = req.params;
-  if (!text) {
-    res.status(404);
-    throw new Error("No Comments!!");
-  }
+  const { text } = req.body;
+  const { id } = req.params; // id is the Post ID
 
-  const comment = await Comment.create({
-    user: req.user._id,
-    post: id,
-    text: text,
-  });
+  if (!text) {
+    res.status(400); // 400 is better for missing body data
+    throw new Error("Comment text is required!");
+  }
 
-  await comment.populate("user", "user_name profilePic");
-  res.status(201).json(comment);
+  const post = await Post.findById(id);
+
+  if (!post) {
+    res.status(404);
+    throw new Error("Post not found!");
+  }
+
+  const comment = await Comment.create({
+    user: req.user._id,
+    post: id,
+    text: text,
+  });
+
+  // ⭐️ FIX: Add the new comment ID to the Post's comments array
+  post.comments.push(comment._id);
+  await post.save();
+
+  // ⭐️ CRUCIAL: Populate the user details for the frontend
+  await comment.populate("user", "user_name profilePic"); 
+  
+  // Send the fully populated comment object back
+  res.status(201).json(comment);
 });
 
 const updateComment = asyncHandler(async (req, res) => {

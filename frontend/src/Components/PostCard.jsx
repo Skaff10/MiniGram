@@ -7,7 +7,7 @@ import { timeAgo } from "../utils/timeAgo";
 import Comment from "./Comment";
 import { useState } from "react";
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post}) => {
   const dispatch = useDispatch();
   const u = JSON.parse(localStorage.getItem("user"));
   const userId = u ? u._id : null;
@@ -16,9 +16,7 @@ const PostCard = ({ post }) => {
   const likes = post.likes?.length || 0;
 
   const handleClick = () => {
-    // 1. Update UI immediately (pass userId)
     dispatch(toggleLikeLocally({ postId: post._id, userId }));
-    // 2. Send API request to backend
     dispatch(toggleLike(post._id));
   };
 
@@ -64,7 +62,11 @@ const PostCard = ({ post }) => {
           <MessageCircle className="w-5 h-5 cursor-pointer" />
         </button>
       </div>
-      <Comment post={post} showInputFromParent={showCommentInput} />
+      <Comment
+        post={post}
+        showInputFromParent={showCommentInput}
+        
+      />
     </div>
   );
 };

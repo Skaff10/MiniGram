@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import postAPI from "./postAPI";
+import { createComment } from "../comment/commentSlice";
 
 const initialState = {
   posts: [],
@@ -98,6 +99,19 @@ export const postSlice = createSlice({
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter((p) => p._id !== action.payload.id);
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        // action.payload is the new comment object
+        const newComment = action.payload;
+        const postId = newComment.post; // Get Post ID from the returned comment
+
+        // Find the specific post in the state (e.g., state.posts is an array)
+        const postIndex = state.posts.findIndex((p) => p._id === postId);
+
+        if (postIndex !== -1) {
+          // Append the populated comment object to the post's comments array
+          state.posts[postIndex].comments.push(newComment);
+        }
       });
   },
 });

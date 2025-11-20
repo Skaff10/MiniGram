@@ -28,11 +28,10 @@ const Feed = () => {
     return () => {
       dispatch(reset());
     };
-  }, [dispatch, isError, message, navigate, reloadKey]); 
-
+  }, [dispatch, isError, message, navigate, reloadKey]);
 
   const handlePostCreated = () => {
-    setReloadKey(prev => prev + 1); 
+    setReloadKey((prev) => prev + 1);
   };
 
   return (
@@ -46,7 +45,13 @@ const Feed = () => {
         <div className="p-4 overflow-y-auto no-scrollbar grow">
           <CreateCard onPostCreated={handlePostCreated} />
           {Array.isArray(posts) &&
-            posts.map((post) => <PostCard key={post._id} post={post} />)}
+            posts.map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+
+              />
+            ))}
         </div>
       </div>
       <div className="w-1/4 p-4 hidden lg:block border-l border-gray-900">
