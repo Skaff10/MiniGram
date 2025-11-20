@@ -19,9 +19,9 @@ const CreateCard = ({ onPostCreated }) => {
     try {
       await dispatch(createPost(formData)).unwrap();
       toast.success("Post created successfully!");
+      
       setText("");
       if (onPostCreated) onPostCreated();
-
     } catch (err) {
       toast.error(err || "Something went wrong");
     }
