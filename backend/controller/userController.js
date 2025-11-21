@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 // Upload User Profile Picture
 const uploadDP = asyncHandler(async (req, res) => {
   const imageUrl = req.file.path;
@@ -122,6 +123,28 @@ const loginUser = asyncHandler(async (req, res) => {
   throw new Error("Invalid Credentials");
 });
 
+// Search Users by name or username
+const searchUsers = asyncHandler(async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    res.status(400);
+    throw new Error("Please provide a search query");
+  }
+
+  // Search for users by name or username (case-insensitive)
+  const users = await User.find({
+    $or: [
+      { user_name: { $regex: query, $options: "i" } },
+      { name: { $regex: query, $options: "i" } },
+    ],
+  })
+    .select("_id user_name name profilePic")
+    .limit(20); // Limit results to 20 users
+
+  res.status(200).json(users);
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "10d",
@@ -133,4 +156,5 @@ module.exports = {
   loginUser,
   uploadDP,
   getUser,
+  searchUsers,
 };

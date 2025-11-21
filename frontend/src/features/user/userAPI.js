@@ -39,12 +39,24 @@ const getUser = async (id, token) => {
   return res.data;
 };
 
+const searchUsers = async (query, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.get(API_URL + "search?query=" + query, config);
+
+  return res.data;
+};
+
 const userAPI = {
   register,
   login,
   logout,
   uploadDP,
   getUser,
+  searchUsers,
 };
 
 export default userAPI;

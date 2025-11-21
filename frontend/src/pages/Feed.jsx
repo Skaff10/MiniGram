@@ -19,7 +19,7 @@ const Feed = () => {
 
   useEffect(() => {
     if (!localStorage.getItem("user")) {
-      toast.info("Please login First");
+      toast.info("Please login first");
       navigate("/login");
       return;
     }
@@ -35,27 +35,26 @@ const Feed = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-gray-200 overflow-hidden">
+    <div className="flex h-screen bg-black text-white overflow-hidden">
       {isLoading && <LoadingSpinner />}
       <Sidebar />
-      <div className="flex flex-col flex-auto max-w-2xl mx-auto border-x border-gray-700 overflow-hidden">
-        <div className="p-4 sticky top-0 bg-gray-900 z-10">
-          <h1 className="text-3xl font-bold text-green-400">MiniGram</h1>
+      <div className="flex flex-col flex-auto max-w-lg mx-auto border-x border-zinc-900 overflow-hidden">
+        <div className="p-4 sticky top-0 bg-black z-10 border-b border-zinc-900">
+          <h1 className="text-2xl font-bold">MiniGram</h1>
         </div>
-        <div className="p-4 overflow-y-auto no-scrollbar grow">
+        <div className="overflow-y-auto no-scrollbar grow">
           <CreateCard onPostCreated={handlePostCreated} />
           {Array.isArray(posts) &&
             posts.map((post) => (
               <PostCard
                 key={post._id}
                 post={post}
-
               />
             ))}
         </div>
       </div>
-      <div className="w-1/4 p-4 hidden lg:block border-l border-gray-900">
-        <p className="text-gray-500">Chatting Will be added later</p>
+      <div className="w-1/4 p-6 hidden lg:block border-l border-zinc-900">
+        <p className="text-gray-600 text-sm">Suggestions for you</p>
       </div>
     </div>
   );

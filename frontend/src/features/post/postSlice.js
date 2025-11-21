@@ -43,6 +43,23 @@ export const fetchPost = createAsyncThunk(
   }
 );
 
+
+export const updatePost = createAsyncThunk(
+  "posts/update",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().user.user.token;
+      return await postAPI.updatePost(id, data, token);
+    } catch (err) {
+      const msg =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
 export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id, thunkAPI) => {

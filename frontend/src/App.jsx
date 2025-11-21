@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Feed from "./pages/Feed";
 import Signup from "./pages/Signup";
 import Create from "./pages/Create";
+import Search from "./pages/Search";
 const App = () => {
   return (
     <>
@@ -15,6 +16,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/Profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/Search" element={<Search />} />
           <Route path="/Create" element={<Create />} />
         </Routes>
       </Router>

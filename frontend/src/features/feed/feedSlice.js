@@ -65,7 +65,7 @@ export const feedSlice = createSlice({
       state.message = "";
     },
     // { changed code }
-    // accept { postId, userId } so reducer can update likes immediately
+   // accept { postId, userId } so reducer can update likes immediately
     toggleLikeLocally: (state, action) => {
       const { postId, userId } = action.payload;
 
@@ -84,6 +84,9 @@ export const feedSlice = createSlice({
         }
         return post;
       });
+    },
+    deletePostFromFeed: (state, action) => {
+      state.posts = state.posts.filter((post) => post._id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -126,5 +129,5 @@ export const feedSlice = createSlice({
       });
   },
 });
-export const { reset, toggleLikeLocally } = feedSlice.actions;
+export const { reset, toggleLikeLocally, deletePostFromFeed } = feedSlice.actions;
 export default feedSlice.reducer;
