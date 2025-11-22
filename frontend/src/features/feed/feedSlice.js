@@ -67,8 +67,7 @@ export const feedSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
-    // { changed code }
-   // accept { postId, userId } so reducer can update likes immediately
+    
     toggleLikeLocally: (state, action) => {
       const { postId, userId } = action.payload;
 
@@ -77,10 +76,10 @@ export const feedSlice = createSlice({
           const likedAlready = post.likes.includes(userId);
           let newLikes;
           if (likedAlready) {
-            // Remove user id exactly once
+       
             newLikes = post.likes.filter((id) => id !== userId);
           } else {
-            // Add user id only if not present
+    
             newLikes = [...post.likes, userId];
           }
           return { ...post, likes: newLikes };
