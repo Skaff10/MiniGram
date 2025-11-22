@@ -17,14 +17,14 @@ const createComment = async (data, token) => {
   );
   return res.data ;
 };
-const updateComment = async (comData, id, token) => {
+const updateComment = async (id, comData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  const res = await axios.update(
+  const res = await axios.put(
     "/api/comment/updatecomment/" + id,
     comData,
     config
@@ -38,7 +38,7 @@ const deleteComment = async (id, token) => {
     },
   };
 
-  const res = await axios.post("/api/comment/deletecomment/" + id, config);
+  const res = await axios.post("/api/comment/deletecomment/" + id, {}, config);
   return res.data;
 };
 

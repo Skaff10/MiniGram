@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import feedApi from "./feedAPI";
+import { updatePost } from "../post/postSlice";
+import { createComment, updateComment, deleteComment } from "../comment/commentSlice";
+
 const initialState = {
   posts: [],
   isLoading: false,
@@ -126,6 +129,45 @@ export const feedSlice = createSlice({
       .addCase(toggleLike.rejected, (state) => {
         state.isLoading = false;
         // Optionally handle rollback or error message
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        const updatedPost = action.payload;
+        state.posts = state.posts.map((post) =>
+          post._id === updatedPost._id
+            ? {
+                ...post,
+                ...updatedPost,
+                user: post.user, // Preserve populated user
+                comments: post.comments, // Preserve populated comments
+                likes: post.likes, // Preserve populated likes (if not changed by update)
+              }
+            : post
+        );
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        const newComment = action.payload;
+        const postId = newComment.post;
+        const post = state.posts.find((p) => p._id === postId);
+        if (post) {
+          post.comments.push(newComment);
+        }
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        const updatedComment = action.payload;
+        const postId = updatedComment.post;
+        const post = state.posts.find((p) => p._id === postId);
+        if (post) {
+          post.comments = post.comments.map((c) =>
+            c._id === updatedComment._id ? updatedComment : c
+          );
+        }
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const { commentId, postId } = action.payload;
+        const post = state.posts.find((p) => p._id === postId);
+        if (post) {
+          post.comments = post.comments.filter((c) => c._id !== commentId);
+        }
       });
   },
 });

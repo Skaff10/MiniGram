@@ -43,15 +43,15 @@ const Profile = () => {
   const loading = userLoading || postsLoading;
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden">
+    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white overflow-hidden transition-colors duration-300">
       <Sidebar />
 
-      <main className="flex-1 overflow-y-auto p-6 bg-black">
+      <main className="flex-1 overflow-y-auto p-6 bg-white dark:bg-black transition-colors duration-300">
         {loading && <LoadingSpinner />}
 
         {/* Profile Info */}
-        <section className="w-full max-w-4xl mx-auto p-6 bg-black flex flex-col items-center text-white">
-          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-zinc-800">
+        <section className="w-full max-w-4xl mx-auto p-6 bg-white dark:bg-black flex flex-col items-center text-black dark:text-white transition-colors duration-300">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 dark:border-zinc-800">
             <img
               src={user?.profilePic || "/nouser.png"}
               alt="profile"
@@ -60,7 +60,7 @@ const Profile = () => {
           </div>
           <div className="mt-4 text-center">
             <h2 className="text-2xl font-bold tracking-wide">{user?.user_name}</h2>
-            <p className="text-gray-500">{user?.name}</p>
+            <p className="text-gray-500 dark:text-gray-400">{user?.name}</p>
           </div>
         </section>
 
@@ -69,7 +69,7 @@ const Profile = () => {
           {posts.length > 0 ? (
             posts.map(post => <PostCard key={post._id} post={post} />)
           ) : (
-            <h3 className="text-center text-gray-500">User hasn't posted yet!</h3>
+            <h3 className="text-center text-gray-500 dark:text-gray-400">User hasn't posted yet!</h3>
           )}
         </section>
       </main>

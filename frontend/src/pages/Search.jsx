@@ -41,19 +41,19 @@ const Search = () => {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden">
+    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white overflow-hidden transition-colors duration-300">
       <Sidebar />
       <main className="flex-1 overflow-y-auto p-6">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Search</h1>
-            <p className="text-gray-500">Find people by name or username</p>
+            <p className="text-gray-500 dark:text-gray-400">Find people by name or username</p>
           </div>
 
           {/* Search Input */}
           <div className="mb-8">
-            <div className="flex bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800">
+            <div className="flex bg-gray-100 dark:bg-zinc-900 rounded-lg overflow-hidden border border-gray-200 dark:border-zinc-800 transition-colors duration-300">
               <div className="p-4 flex items-center">
                 <SearchIcon className="w-5 h-5 text-gray-500" />
               </div>
@@ -62,7 +62,7 @@ const Search = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className="flex-1 p-4 bg-transparent text-white focus:outline-none"
+                className="flex-1 p-4 bg-transparent text-black dark:text-white focus:outline-none"
                 autoFocus
               />
             </div>
@@ -75,7 +75,7 @@ const Search = () => {
                 <div
                   key={user._id}
                   onClick={() => handleUserClick(user._id)}
-                  className="bg-black p-4 flex items-center gap-4 hover:bg-zinc-900 cursor-pointer transition-colors rounded-lg"
+                  className="bg-white dark:bg-black p-4 flex items-center gap-4 hover:bg-gray-100 dark:hover:bg-zinc-900 cursor-pointer transition-colors rounded-lg"
                 >
                   {user.profilePic ? (
                     <img
@@ -84,12 +84,12 @@ const Search = () => {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center">
                       <User className="w-6 h-6 text-gray-500" />
                     </div>
                   )}
                   <div className="flex-1">
-                    <h3 className="font-semibold text-white">
+                    <h3 className="font-semibold text-black dark:text-white">
                       {user.user_name}
                     </h3>
                     <p className="text-gray-500 text-sm">{user.name}</p>
@@ -102,14 +102,14 @@ const Search = () => {
           {/* Loading */}
           {isSearching && (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin h-8 w-8 border-2 border-white border-t-transparent rounded-full"></div>
+              <div className="inline-block animate-spin h-8 w-8 border-2 border-black dark:border-white border-t-transparent rounded-full"></div>
             </div>
           )}
 
           {/* No Results */}
           {!searchResults.length && searchQuery && !isSearching && (
             <div className="text-center py-16">
-              <SearchIcon className="w-16 h-16 mx-auto mb-4 text-zinc-700" />
+              <SearchIcon className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-zinc-700" />
               <p className="text-gray-500 text-lg">No results found</p>
             </div>
           )}

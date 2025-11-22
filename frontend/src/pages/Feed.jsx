@@ -35,11 +35,11 @@ const Feed = () => {
   };
 
   return (
-    <div className="flex h-screen bg-black text-white overflow-hidden">
+    <div className="flex h-screen bg-white dark:bg-black text-black dark:text-white overflow-hidden transition-colors duration-300">
       {isLoading && <LoadingSpinner />}
       <Sidebar />
-      <div className="flex flex-col flex-auto max-w-lg mx-auto border-x border-zinc-900 overflow-hidden">
-        <div className="p-4 sticky top-0 bg-black z-10 border-b border-zinc-900">
+      <div className="flex flex-col flex-auto max-w-lg mx-auto border-x border-gray-200 dark:border-zinc-900 overflow-hidden transition-colors duration-300">
+        <div className="p-4 sticky top-0 bg-white dark:bg-black z-10 border-b border-gray-200 dark:border-zinc-900 transition-colors duration-300">
           <h1 className="text-2xl font-bold">MiniGram</h1>
         </div>
         <div className="overflow-y-auto no-scrollbar grow">
@@ -53,8 +53,8 @@ const Feed = () => {
             ))}
         </div>
       </div>
-      <div className="w-1/4 p-6 hidden lg:block border-l border-zinc-900">
-        <p className="text-gray-600 text-sm">Suggestions for you</p>
+      <div className="w-1/4 p-6 hidden lg:block border-l border-gray-200 dark:border-zinc-900 transition-colors duration-300">
+        <p className="text-gray-500 dark:text-gray-400 text-sm">Suggestions for you</p>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ const createPost = async (postData, token) => {
   return res.data;
 };
 
-const updatePost = async (postData, id, token) => {
+const updatePost = async (id, postData, token) => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,

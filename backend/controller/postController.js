@@ -78,6 +78,7 @@ const updatePost = asyncHandler(async (req, res) => {
       new: true,
     }
   );
+  await updatedPost.populate("user", "user_name profilePic");
   res.status(200).json(updatedPost);
 });
 
@@ -124,6 +125,9 @@ const likeDislikePost = asyncHandler(async (req, res) => {
   }
 
   const updatedPost = await post.save();
+  
+  // Populate user information before sending response
+  await updatedPost.populate("user", "user_name profilePic");
 
   res.status(200).json(updatedPost);
 });

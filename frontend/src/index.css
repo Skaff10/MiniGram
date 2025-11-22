@@ -1,10 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @plugin "daisyui";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
   --color-loadingcolor: #faf9f6;
-  --breakpoint-mybrk : 90rem ;
+  --breakpoint-mybrk: 90rem;
   
   /* Modern Color Palette */
   --color-primary: #10b981;
@@ -14,6 +15,8 @@
   --color-gradient-start: #6366f1;
   --color-gradient-end: #8b5cf6;
 }
+
+
 
 /* Global Styles */
 * {

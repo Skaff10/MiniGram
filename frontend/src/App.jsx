@@ -7,9 +7,11 @@ import Feed from "./pages/Feed";
 import Signup from "./pages/Signup";
 import Create from "./pages/Create";
 import Search from "./pages/Search";
+import { ThemeProvider } from "./context/ThemeContext";
+
 const App = () => {
   return (
-    <>
+    <ThemeProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Feed />} />
@@ -22,7 +24,7 @@ const App = () => {
         </Routes>
       </Router>
       <ToastContainer />
-    </>
+    </ThemeProvider>
   );
 };
 

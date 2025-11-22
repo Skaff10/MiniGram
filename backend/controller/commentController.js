@@ -78,7 +78,13 @@ const deleteComment = asyncHandler(async (req, res) => {
   }
 
   await Comment.findByIdAndDelete(req.params.id);
-  res.status(200).json({ id: req.params.id });
+
+  // Remove comment from post's comments array
+  await Post.findByIdAndUpdate(comment.post, {
+    $pull: { comments: req.params.id },
+  });
+
+  res.status(200).json({ commentId: req.params.id, postId: comment.post });
 });
 
 module.exports = {

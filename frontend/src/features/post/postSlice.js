@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import postAPI from "./postAPI";
-import { createComment } from "../comment/commentSlice";
+import { createComment, updateComment, deleteComment } from "../comment/commentSlice";
 
 const initialState = {
   posts: [],
@@ -114,6 +114,31 @@ export const postSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        const updatedPost = action.payload;
+        // Update in posts array
+        state.posts = state.posts.map((post) =>
+          post._id === updatedPost._id
+            ? {
+                ...post,
+                ...updatedPost,
+                user: post.user,
+                comments: post.comments,
+                likes: post.likes,
+              }
+            : post
+        );
+        // Update singlePost if matches
+        if (state.singlePost && state.singlePost._id === updatedPost._id) {
+          state.singlePost = {
+            ...state.singlePost,
+            ...updatedPost,
+            user: state.singlePost.user,
+            comments: state.singlePost.comments,
+            likes: state.singlePost.likes,
+          };
+        }
+      })
       .addCase(deletePost.fulfilled, (state, action) => {
         state.posts = state.posts.filter((p) => p._id !== action.payload.id);
       })
@@ -128,6 +153,44 @@ export const postSlice = createSlice({
         if (postIndex !== -1) {
           // Append the populated comment object to the post's comments array
           state.posts[postIndex].comments.push(newComment);
+        }
+        
+        // Also update singlePost if it matches
+        if (state.singlePost && state.singlePost._id === postId) {
+          state.singlePost.comments.push(newComment);
+        }
+      })
+      .addCase(updateComment.fulfilled, (state, action) => {
+        const updatedComment = action.payload;
+        const postId = updatedComment.post;
+        
+        // Update in posts array
+        const postIndex = state.posts.findIndex((p) => p._id === postId);
+        if (postIndex !== -1) {
+          state.posts[postIndex].comments = state.posts[postIndex].comments.map(c => 
+            c._id === updatedComment._id ? updatedComment : c
+          );
+        }
+
+        // Update in singlePost
+        if (state.singlePost && state.singlePost._id === postId) {
+          state.singlePost.comments = state.singlePost.comments.map(c => 
+            c._id === updatedComment._id ? updatedComment : c
+          );
+        }
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        const { commentId, postId } = action.payload;
+        
+        // Update in posts array
+        const postIndex = state.posts.findIndex((p) => p._id === postId);
+        if (postIndex !== -1) {
+          state.posts[postIndex].comments = state.posts[postIndex].comments.filter(c => c._id !== commentId);
+        }
+
+        // Update in singlePost
+        if (state.singlePost && state.singlePost._id === postId) {
+          state.singlePost.comments = state.singlePost.comments.filter(c => c._id !== commentId);
         }
       });
   },

@@ -28,18 +28,18 @@ const CreateCard = ({ onPostCreated }) => {
   };
 
   return (
-    <section className="border border-gray-700 rounded-2xl p-4 bg-gray-900 text-white mb-3">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <section className="border border-gray-200 dark:border-zinc-900 rounded-sm p-4 bg-white dark:bg-black text-black dark:text-white mb-3 transition-colors duration-300">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="What's on your mind?"
-          className="w-full p-4 rounded-xl bg-gray-800 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={4}
+          className="w-full p-3 rounded-sm bg-gray-50 dark:bg-black text-black dark:text-white resize-none focus:outline-none border border-gray-200 dark:border-zinc-800 focus:border-gray-400 dark:focus:border-zinc-700 text-sm"
+          rows={3}
         />
         <button
           type="submit"
-          className="self-end px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition cursor-pointer"
+          className="self-end px-5 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition cursor-pointer text-sm"
         >
           Post
         </button>
