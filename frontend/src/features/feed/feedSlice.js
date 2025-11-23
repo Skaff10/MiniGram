@@ -29,12 +29,13 @@ export const fetchPosts = createAsyncThunk(
 
 export const fetchProfilePosts = createAsyncThunk(
   "feed/profilePost",
-  async (_, thunkAPI) => {
+  async (userId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().user.user.token;
-      return await feedApi.getProfilePost(token);
+      return await feedApi.getProfilePost(userId, token);
     } catch (err) {
-      (err.response && err.response.data && err.response.data.message) ||
+      const msg =
+        (err.response && err.response.data && err.response.data.message) ||
         err.message ||
         err.toString();
 

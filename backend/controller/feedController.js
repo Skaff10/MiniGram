@@ -4,7 +4,13 @@ const asyncHandler = require("express-async-handler");
 
 
 const getProfilePost = asyncHandler(async (req, res) => {
-  const posts = await Post.find({ user: req.user._id })
+  let userId = req.params.id || req.user._id;
+  
+  if (userId === "undefined" || userId === "null") {
+    userId = req.user._id;
+  }
+
+  const posts = await Post.find({ user: userId })
     .sort({ createdAt: -1 })
     .populate("user", "user_name profilePic")
     .lean();

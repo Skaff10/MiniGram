@@ -5,6 +5,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
   user: user ? user : null,
+  visitedUser: null,
   isError: false,
   isLoading: false,
   isSuccess: false,
@@ -86,6 +87,9 @@ export const userSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    resetVisitedUser: (state) => {
+      state.visitedUser = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -122,6 +126,7 @@ export const userSlice = createSlice({
 
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+        state.visitedUser = null;
       })
 
       /* getUser handlers */
@@ -131,7 +136,7 @@ export const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = { ...action.payload, token: state.user?.token };
+        state.visitedUser = action.payload;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -146,7 +151,6 @@ export const userSlice = createSlice({
       .addCase(uploadDP.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        // assume API returns updated user object; update stored user
         state.user = action.payload;
       })
       .addCase(uploadDP.rejected, (state, action) => {
@@ -157,5 +161,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { reset } = userSlice.actions;
+export const { reset, resetVisitedUser } = userSlice.actions;
 export default userSlice.reducer;

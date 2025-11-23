@@ -37,6 +37,7 @@ const Search = () => {
   }, [searchQuery, user.token]);
 
   const handleUserClick = (userId) => {
+ 
     navigate(`/profile/${userId}`);
   };
 

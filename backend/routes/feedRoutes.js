@@ -7,6 +7,7 @@ const {
   getFeedPosts,
 } = require("../controller/feedController");
 
+router.get("/profileposts/:id", protect, getProfilePost);
 router.get("/profileposts", protect, getProfilePost);
 router.get("/feedposts", getFeedPosts);
 
