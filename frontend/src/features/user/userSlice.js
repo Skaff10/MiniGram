@@ -61,6 +61,23 @@ export const uploadDP = createAsyncThunk(
   }
 );
 
+export const removeDP = createAsyncThunk(
+  "user/removeDp",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().user.user.token;
+      return await userAPI.removeDP(token);
+    } catch (err) {
+      const msg =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
 export const getUser = createAsyncThunk(
   "user/getUser",
   async (id, thunkAPI) => {
@@ -151,9 +168,31 @@ export const userSlice = createSlice({
       .addCase(uploadDP.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload;
+        // Only update the profilePic, preserve other user data like token
+        if (state.user) {
+          state.user.profilePic = action.payload.profilePic;
+          localStorage.setItem("user", JSON.stringify(state.user));
+        }
       })
       .addCase(uploadDP.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      /* removeDP handlers */
+      .addCase(removeDP.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(removeDP.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        if (state.user) {
+          state.user.profilePic = ""; // or null, depending on how you want to treat it
+          localStorage.setItem("user", JSON.stringify(state.user));
+        }
+      })
+      .addCase(removeDP.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

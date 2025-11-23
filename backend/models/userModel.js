@@ -20,6 +20,9 @@ const userSchema = mongoose.Schema(
     profilePic: {
       type: String,
     },
+    profilePicPublicId: {
+      type: String,
+    },
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("../config/cloudinary");
 
 // Upload User Profile Picture
 const uploadDP = asyncHandler(async (req, res) => {
@@ -20,12 +21,49 @@ const uploadDP = asyncHandler(async (req, res) => {
   }
 
   user.profilePic = imageUrl;
+  user.profilePicPublicId = publicId;
   await user.save();
 
   res.status(200).json({
     message: "Image uploaded and saved to user profile successfully!",
     profilePic: user.profilePic,
     publicId,
+  });
+});
+
+// Remove User Profile Picture
+const removeDP = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Delete from Cloudinary
+  if (user.profilePicPublicId) {
+    await cloudinary.uploader.destroy(user.profilePicPublicId);
+  } else if (user.profilePic) {
+    // Fallback for legacy images: try to extract public ID from URL
+    // URL format: .../upload/v12345/Dp_Dump/filename.jpg
+    try {
+      const parts = user.profilePic.split("/");
+      const filenameWithExt = parts[parts.length - 1];
+      const filename = filenameWithExt.split(".")[0];
+      const folder = "Dp_Dump"; // Assuming default folder
+      await cloudinary.uploader.destroy(`${folder}/${filename}`);
+    } catch (error) {
+      console.error("Error deleting legacy image from Cloudinary:", error);
+    }
+  }
+
+  user.profilePic = "";
+  user.profilePicPublicId = "";
+  await user.save();
+
+  res.status(200).json({
+    message: "Profile picture removed successfully",
+    profilePic: "",
   });
 });
 
@@ -156,6 +194,7 @@ module.exports = {
   registerUser,
   loginUser,
   uploadDP,
+  removeDP,
   getUser,
   searchUsers,
 };

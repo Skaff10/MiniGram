@@ -28,6 +28,16 @@ const uploadDP = async (userData, token) => {
   return res.data;
 };
 
+const removeDP = async (token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const res = await axios.put(API_URL + "remove-dp", {}, config);
+  return res.data;
+};
+
 const getUser = async (id, token) => {
   const config = {
     headers: {
@@ -55,6 +65,7 @@ const userAPI = {
   login,
   logout,
   uploadDP,
+  removeDP,
   getUser,
   searchUsers,
 };
